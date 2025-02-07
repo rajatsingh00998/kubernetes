@@ -1,0 +1,28 @@
+jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-container
+            image: busybox:1.28
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+              echo "Backup Started" ;
+              mkdir -p /backups &&
+              mkdir -p /demo-data &&
+              cp -r /demo-data /backupss &&
+              echo "Backup comleted"
+          restartPolicy: OnFailure
+          volumeMounts:
+            - name: data-volume
+              mountPath: /demo-data
+            - name: backup-volume
+              mountPath: /backups
+          volumes:
+            - name: backup-volume
+              hostPath:
+                path: /backups
+                type: DirectoryOrCreate
